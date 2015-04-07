@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Sketchfab Viewer API example</title>
+    <script type="text/javascript" src="https://d2f25wgezub9nf.cloudfront.net/api/sketchfab-viewer-1.0.0.js"></script>
+
+    <script type="text/javascript" src="augment.js"></script>
+    <script type="text/javascript" src="qwest.min.js"></script>
+    <script type="text/javascript" src="gl-matrix.js"></script>
+    <script type="text/javascript" src="skfb-viewer-plus.js"></script>
+</head>
+<body>
+
+<iframe id="skfb-viewer" src="" width="640" height="400" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" onmousewheel=""></iframe>
+
+<script type="text/javascript">
+var iframe = document.getElementById( 'skfb-viewer' );
+var version = '1.0.0';
+var urlid = '8404d02c8fdc42419f6b8f11a0091506';
+var client = new Sketchfab( version, iframe );
+
+client.init( urlid, {
+    success: function onSuccess( api ){
+        //API is ready to use
+        api = augment.extend( api, SketchfabViewerPlusMixin);
+        api.start();
+        api.addEventListener('viewerready', function(){
+            api.getAnnotations('8404d02c8fdc42419f6b8f11a0091506', function(annotations){
+                console.log(annotations);
+                setTimeout(function(){
+                    api.goToAnnotation(0);
+                }, 2000);
+            });
+            api.startCameraPolling();
+        });
+    },
+    error: function onError() {
+        console.log( 'Viewer error' );
+    }
+} );
+</script>
+</body>
+</html>
